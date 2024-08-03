@@ -9,6 +9,24 @@ const app = express();
 app.use(express.json());
 const mongoose = require("mongoose");
 const UserModel = require("./Models/Users");
+const userRoutes = require("./Routes/Users");
+
+///////////////////////
+// Routes
+///////////////////////
+app.use(userRoutes);
+
+///////////////////////
+// Middleware
+///////////////////////
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
+});
+
+///////////////////////
+// Server and db setup
+///////////////////////
 
 //sets options for the client/api
 const clientOptions = {
@@ -40,27 +58,3 @@ async function run() {
   }
 }
 run().catch(console.dir);
-
-// general POST request for testing
-app.post("/", async (req, res) => {
-  const { FirstName } = req.body;
-  try {
-    const user = await UserModel.create({
-      FirstName: FirstName,
-    });
-    res.status(200).json(user);
-  } catch (err) {
-    return res.status(400).json({ err: err.message });
-  }
-});
-
-// genearl GET request for testing
-app.get("/getUsers", async (req, res) => {
-  UserModel.find().then((err, result) => {
-    if (err) {
-      res.json(err);
-    } else {
-      res.json(result);
-    }
-  });
-});
