@@ -3,29 +3,21 @@
 const express = require("express");
 const router = express.Router();
 const UserModel = require("../Models/Users");
+const UsersController = require("../Controllers/UsersController");
 
-// general POST request for testing
-router.post("/", async (req, res) => {
-  const { FirstName } = req.body;
-  try {
-    const user = await UserModel.create({
-      FirstName: FirstName,
-    });
-    res.status(200).json(user);
-  } catch (err) {
-    return res.status(400).json({ err: err.message });
-  }
-});
+// POST Request for a user
+router.post("/", UsersController.createUser);
 
-// genearl GET request for testing
-router.get("/getUsers", async (req, res) => {
-  UserModel.find().then((err, result) => {
-    if (err) {
-      res.json(err);
-    } else {
-      res.json(result);
-    }
-  });
-});
+// GET request for all users
+router.get("/getUsers", UsersController.listAllUsers);
+
+// GET request by ID
+router.get("/:id", UsersController.getUserByID);
+
+// DELETE request by ID
+router.delete("/:id", UsersController.deleteUser);
+
+// PATCH request by ID
+router.patch("/:id", UsersController.updateUser);
 
 module.exports = router;
