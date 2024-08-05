@@ -9,7 +9,7 @@ const UsersController = require("../Controllers/UsersController");
 router.post("/", UsersController.createUser);
 
 // GET request for all users
-router.get("/getUsers", UsersController.listAllUsers);
+router.get("/", UsersController.getUsers);
 
 // GET request by ID
 router.get("/:id", UsersController.getUserByID);

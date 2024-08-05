@@ -18,14 +18,10 @@ const createUser = async (req, res) => {
 };
 
 // Lists out all of the users
-const listAllUsers = (req, res) => {
-  UserModel.find().then((err, result) => {
-    if (err) {
-      res.json(err);
-    } else {
-      res.json(result);
-    }
-  });
+const getUsers = async (req, res) => {
+  const users = await UserModel.find({}).sort({ createdAt: -1 });
+
+  res.status(200).json(users);
 };
 
 // Gets a single user by its ID
@@ -79,7 +75,7 @@ const updateUser = async (req, res) => {
 
 module.exports = {
   createUser,
-  listAllUsers,
+  getUsers,
   getUserByID,
   deleteUser,
   updateUser,
