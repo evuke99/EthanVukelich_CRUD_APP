@@ -14,7 +14,7 @@ const userRoutes = require("./Routes/Users");
 ///////////////////////
 // Routes
 ///////////////////////
-app.use(userRoutes);
+app.use("/api/users", userRoutes);
 
 ///////////////////////
 // Middleware
