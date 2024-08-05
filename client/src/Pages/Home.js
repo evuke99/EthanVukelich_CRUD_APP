@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 // Components
 import UserList from "../Components/UserList";
+import UserForm from "../Components/UserForm";
 
 const Home = () => {
   const [users, setUsers] = useState(null);
@@ -37,6 +38,7 @@ const Home = () => {
       <div className="users">
         {users && users.map((user) => <UserList key={user._id} user={user} />)}
       </div>
+      <UserForm />
     </div>
   );
 };
