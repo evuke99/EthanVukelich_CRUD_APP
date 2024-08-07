@@ -8,37 +8,56 @@ Axios.defaults.withCredentials = true;
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [Username, setUsername] = useState("");
-  const [_id, setID] = useState(null);
+  // const [Username, setUsername] = useState("");
+  // const [_id, setID] = useState(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const logIn = () => {
-    setIsLoggingIn(true);
+    console.log("logIn");
     setIsLoggedIn(true);
+    localStorage.setItem("LOGGED_IN", JSON.stringify(true));
   };
 
   const logOut = () => {
-    console.log("logged out");
-    setIsLoggingIn(false);
+    console.log("logOut");
     setIsLoggedIn(false);
+    localStorage.setItem("LOGGED_IN", JSON.stringify(false));
+    localStorage.removeItem("User");
   };
 
   useEffect(() => {
+    const data = localStorage.getItem("LOGGED_IN");
+    setIsLoggedIn(JSON.parse(data));
+    console.log("useEffect");
     Axios.get("/api/users/getCurrentUser")
       .then((res) => {
-        setUsername(res.data.user.Username);
-        setID(res.data.user._id);
+        localStorage.setItem(
+          "User",
+          JSON.stringify({
+            Username: res.data.user.Username,
+            _id: res.data.user._id,
+          })
+        );
+        // setUsername(res.data.user.Username);
+        // setID(res.data.user._id);
       })
       .then(() => {
-        console.log("Logged In");
+        // console.log("Axios then");
+        // localStorage.setItem(
+        //   "User",
+        //   JSON.stringify({ Username: Username, _id: _id })
+        // );
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [isLoggingIn]);
+  }, [isLoggedIn]);
 
   // Changes Navbar based on if the user is logged in or not (need to add token validation here)
   const IsLoggedIn = () => {
+    const data = localStorage.getItem("LOGGED_IN");
+    // console.log("in IsLoggedIN: ", JSON.stringify(data), isLoggedIn);
+    console.log("IsLoggedIn");
     if (isLoggedIn) {
       return (
         <>
@@ -69,6 +88,8 @@ const Navbar = () => {
             </ul>
           </div>
           <div className="navbar-end" data-theme="dark">
+            {/* <LogoutButton logginOut={() => setIsLoggedIn(false)} />
+            <SignInModal logginIn={() => setIsLoggedIn(true)} /> */}
             <LogoutButton logginOut={logOut} />
             <SignInModal logginIn={logIn} />
             <RegisterModal />
@@ -91,6 +112,7 @@ const Navbar = () => {
             </ul>
           </div>
           <div className="navbar-end" data-theme="dark">
+            {/* <SignInModal logginIn={() => setIsLoggedIn(true)} /> */}
             <SignInModal logginIn={logIn} />
             <RegisterModal />
           </div>

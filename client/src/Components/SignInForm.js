@@ -53,7 +53,7 @@ const SignInForm = ({ logginIn }) => {
             >
               <div>
                 <label
-                  for="Username"
+                  htmlFor="Username"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Username
@@ -61,7 +61,7 @@ const SignInForm = ({ logginIn }) => {
                 <input
                   type="Username"
                   name="Username"
-                  id="Username"
+                  id="UsernameSignIn"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   placeholder="Username"
                   required=""
@@ -71,7 +71,7 @@ const SignInForm = ({ logginIn }) => {
               </div>
               <div>
                 <label
-                  for="Password"
+                  htmlFor="Password"
                   className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                 >
                   Password
@@ -79,7 +79,7 @@ const SignInForm = ({ logginIn }) => {
                 <input
                   type="Password"
                   name="Password"
-                  id="Password"
+                  id="PasswordSignIn"
                   placeholder="••••••••"
                   className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                   required=""
