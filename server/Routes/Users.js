@@ -12,12 +12,24 @@ router.post("/", UsersController.createUser);
 router.get("/", UsersController.getUsers);
 
 // GET request by ID
-router.get("/:id", UsersController.getUserByID);
+// router.get("/:id", UsersController.getUserByID);
 
 // DELETE request by ID
 router.delete("/:id", UsersController.deleteUser);
 
 // PATCH request by ID
 router.patch("/:id", UsersController.updateUser);
+
+router.post("/login", UsersController.loginUser);
+
+router.get("/logout", UsersController.logoutUser);
+
+//GET request to receive authenticate the current user
+router.get(
+  "/getCurrentUser",
+  UsersController.authorization,
+  UsersController.getCurrentUser
+);
+// router.get("/getCurrentUser", UsersController.getCurrentUser);
 
 module.exports = router;

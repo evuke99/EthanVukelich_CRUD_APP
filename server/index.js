@@ -1,20 +1,35 @@
-require("dotenv").config();
-
 //.env variables used for db URI and PORT
+require("dotenv").config();
 const PORT = process.env.PORT;
-const ATLAS_URI = process.env.ATLAS_URI;
 
+const ATLAS_URI = process.env.ATLAS_URI;
+const cookieParser = require("cookie-parser");
 const express = require("express");
-const app = express();
-app.use(express.json());
+const cors = require("cors");
 const mongoose = require("mongoose");
+
+const app = express();
+
+app.use(cookieParser());
+app.use(express.json());
+// app.use(
+//   cors({
+//     origin: ["http://localhost:5050/"],
+//     credentials: true,
+//   })
+// );
+
 const UserModel = require("./Models/Users");
-const userRoutes = require("./Routes/Users");
+const UserRoutes = require("./Routes/Users");
+
+const InventoryModel = require("./Models/Inventory");
+const InventoryRoutes = require("./Routes/Inventory");
 
 ///////////////////////
 // Routes
 ///////////////////////
-app.use("/api/users", userRoutes);
+app.use("/api/users", UserRoutes);
+app.use("/api/inventory", InventoryRoutes);
 
 ///////////////////////
 // Middleware
