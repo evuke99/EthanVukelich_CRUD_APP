@@ -6,12 +6,9 @@ import Navbar from "./Components/Navbar";
 
 function App() {
   return (
-    <div className="bg-base-100">
+    <div className="">
       <BrowserRouter>
-        {/* <div className="">
-          <Navbar />
-        </div> */}
-        <div className="pages">
+        <div className="pages min-h-screen h-full bg-base-100">
           <Routes>
             <Route path="/" element={<Home />} />
           </Routes>

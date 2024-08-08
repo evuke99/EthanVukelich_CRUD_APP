@@ -1,21 +1,27 @@
 import SignInModal from "./SignInModal";
 import RegisterModal from "./RegisterModal";
 import LogoutButton from "./LogoutButton";
+import CreateItemModal from "./CreateItemModal";
+import CreateItemForm from "./CreateItemForm";
 import Axios from "axios";
 import { useState, useEffect } from "react";
 
 Axios.defaults.withCredentials = true;
 
-const Navbar = () => {
+const Navbar = ({ update }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const [Username, setUsername] = useState("");
   // const [_id, setID] = useState(null);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [updateState, setUpdateState] = useState(false);
+  const [counter, setCounter] = useState(0);
 
   const logIn = () => {
     console.log("logIn");
     setIsLoggedIn(true);
     localStorage.setItem("LOGGED_IN", JSON.stringify(true));
+    localStorage.setItem("RADIO_SELECT", JSON.stringify("USER_ITEMS"));
+    update("LOGIN");
   };
 
   const logOut = () => {
@@ -23,10 +29,52 @@ const Navbar = () => {
     setIsLoggedIn(false);
     localStorage.setItem("LOGGED_IN", JSON.stringify(false));
     localStorage.removeItem("User");
+    localStorage.removeItem("RADIO_SELECT");
+    update("LOGOUT");
+  };
+
+  const createItem = () => {
+    console.log("create item");
+    localStorage.setItem("RADIO_SELECT", JSON.stringify("USER_ITEMS"));
+    update("CREATEITEM");
+  };
+
+  const handleRadios = (data) => {
+    // if (updateState) {
+    //   setUpdateState(false);
+    //   update(false);
+    // } else {
+    //   setUpdateState(true);
+    //   update(true);
+    // }
+
+    console.log(data);
+    // if (color === "RED") {
+    //   localStorage.setItem("RADIO_SELECT", JSON.stringify("USER_ITEMS"));
+    // } else if (color === "BLUE") {
+    //   localStorage.setItem("RADIO_SELECT", JSON.stringify("ALL_ITEMS"));
+    // }
+  };
+
+  const handleUpdate = (data) => {
+    // if (updateState) {
+    //   console.log(updateState);
+    //   setUpdateState(false);
+    //   update(false);
+    // } else {
+    //   console.log(updateState);
+    //   setUpdateState(true);
+    //   update(true);
+    // }
+    localStorage.setItem("RADIO_SELECT", JSON.stringify(data));
+    update(data);
   };
 
   useEffect(() => {
     const data = localStorage.getItem("LOGGED_IN");
+    if (data === null) {
+      localStorage.setItem("LOGGED_IN", JSON.stringify(false));
+    }
     setIsLoggedIn(JSON.parse(data));
     console.log("useEffect");
     Axios.get("/api/users/getCurrentUser")
@@ -38,15 +86,6 @@ const Navbar = () => {
             _id: res.data.user._id,
           })
         );
-        // setUsername(res.data.user.Username);
-        // setID(res.data.user._id);
-      })
-      .then(() => {
-        // console.log("Axios then");
-        // localStorage.setItem(
-        //   "User",
-        //   JSON.stringify({ Username: Username, _id: _id })
-        // );
       })
       .catch((err) => {
         console.log(err);
@@ -56,42 +95,32 @@ const Navbar = () => {
   // Changes Navbar based on if the user is logged in or not (need to add token validation here)
   const IsLoggedIn = () => {
     const data = localStorage.getItem("LOGGED_IN");
-    // console.log("in IsLoggedIN: ", JSON.stringify(data), isLoggedIn);
-    console.log("IsLoggedIn");
     if (isLoggedIn) {
       return (
         <>
-          <div className="navbar-center hidden  lg:flex">
-            <ul className="menu menu-horizontal px-1">
-              <li>
-                <a>Create Item</a>
-              </li>
-              <li>
-                <details>
-                  <summary>Parent</summary>
-                  <ul className="p-2">
-                    <li>
-                      <a>Create Item</a>
-                    </li>
-                    <li>
-                      <a>Toggle Ownership</a>
-                    </li>
-                  </ul>
-                </details>
-              </li>
-              <li>
-                <a>Toggle: Your Items vs All Items</a>
-              </li>
-              <li>
-                <a>Search Bar</a>
-              </li>
-            </ul>
+          <div className="navbar-center">
+            <CreateItemModal creating={createItem} />
           </div>
-          <div className="navbar-end" data-theme="dark">
-            {/* <LogoutButton logginOut={() => setIsLoggedIn(false)} />
-            <SignInModal logginIn={() => setIsLoggedIn(true)} /> */}
+          <div className="navbar-center hidden  lg:flex">
+            <div className="form-control">
+              <button
+                className="text-white hover:text-blue-600 font-medium rounded-lg text-sm px-4 py-2 text-center"
+                onClick={() => handleUpdate("USER_ITEMS")}
+              >
+                Your Items
+              </button>
+            </div>
+            <div className="form-control">
+              <button
+                className="text-white hover:text-blue-600 font-medium rounded-lg text-sm px-4 py-2 text-center"
+                onClick={() => handleUpdate("ALL_ITEMS")}
+              >
+                All Items
+              </button>
+            </div>
+          </div>
+          <div className="navbar-end">
             <LogoutButton logginOut={logOut} />
-            <SignInModal logginIn={logIn} />
             <RegisterModal />
           </div>
         </>
@@ -99,19 +128,7 @@ const Navbar = () => {
     } else {
       return (
         <>
-          <div className="navbar-center hidden  lg:flex">
-            <ul className="menu menu-horizontal px-1">
-              <li>
-                <a>
-                  {/* <button onClick={handleOnClick}>Send Request</button> */}
-                </a>
-              </li>
-              <li>
-                <a>Search Bar</a>
-              </li>
-            </ul>
-          </div>
-          <div className="navbar-end" data-theme="dark">
+          <div className="navbar-end bg-base-300">
             {/* <SignInModal logginIn={() => setIsLoggedIn(true)} /> */}
             <SignInModal logginIn={logIn} />
             <RegisterModal />
@@ -122,10 +139,11 @@ const Navbar = () => {
   };
 
   return (
-    <div className="navbar fixed rounded z-10 bg-base-100" data-theme="dark">
+    <div className="navbar fixed rounded z-10 bg-base-300">
       <div className="navbar-start">
         <a className="btn btn-ghost text-xl">Inventory Management</a>
       </div>
+
       <IsLoggedIn />
     </div>
   );

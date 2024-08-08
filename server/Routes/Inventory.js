@@ -11,6 +11,9 @@ router.post("/create", InventoryController.createItem);
 // GET request to get all items
 router.get("/getall", InventoryController.getItems);
 
+// GET request to get all items that match the current user's UserId
+router.get("/getItem/:UserId", InventoryController.getUserItems);
+
 // GET request by ID
 // router.get("/:id", UsersController.getUserByID);
 

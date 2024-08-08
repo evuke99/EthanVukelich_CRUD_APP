@@ -118,7 +118,7 @@ const authorization = (req, res, next) => {
   const token = req.cookies.token;
   // console.log(token);
   if (!token) {
-    return res.status(403).json("No user signed on");
+    return res.json("No user signed on");
   }
   try {
     // console.log("here hello");

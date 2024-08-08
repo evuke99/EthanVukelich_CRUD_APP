@@ -1,6 +1,5 @@
 import * as React from "react";
 import RegisterForm from "./RegisterForm";
-const { useState } = require("react");
 
 const RegisterModal = () => {
   return (

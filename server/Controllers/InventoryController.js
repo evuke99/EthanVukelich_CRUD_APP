@@ -1,7 +1,7 @@
 const InventoryModel = require("../Models/Inventory");
 const mongoose = require("mongoose");
 
-// Creates a single user in the database
+// Creates a single item in the database
 const createItem = async (req, res) => {
   const Item = ({ UserId, ItemName, Description, Quantity } = req.body);
 
@@ -20,4 +20,12 @@ const getItems = async (req, res) => {
   res.status(200).json(items);
 };
 
-module.exports = { createItem, getItems };
+//Lists out all items that have the UserId of the currently logged in user
+const getUserItems = async (req, res) => {
+  const items = await InventoryModel.find({ UserId: req.params.UserId }).sort({
+    createdAt: -1,
+  });
+  res.status(200).json(items);
+};
+
+module.exports = { createItem, getItems, getUserItems };

@@ -3,9 +3,9 @@ import SignInForm from "./SignInForm";
 
 const SignInModal = ({ logginIn }) => {
   return (
-    <div>
+    <>
       <button
-        className="text-white hover:text-blue-600 font-medium rounded-lg text-sm px-4 py-2 text-center"
+        className="text-white hover:text-blue-600 bg-base-300 font-medium rounded-lg text-sm px-4 py-2 text-center"
         onClick={() => document.getElementById("SignInModal").showModal()}
       >
         Sign In
@@ -15,7 +15,7 @@ const SignInModal = ({ logginIn }) => {
           <SignInForm logginIn={logginIn} />
         </div>
       </dialog>
-    </div>
+    </>
   );
 };
 

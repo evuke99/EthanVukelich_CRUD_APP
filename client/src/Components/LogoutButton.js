@@ -17,7 +17,7 @@ const LogoutButton = ({ logginOut }) => {
   return (
     <div>
       <button
-        className="text-white hover:text-blue-600 font-medium rounded-lg text-sm py-2 text-center"
+        className="text-white hover:text-blue-600 font-medium rounded-lg text-sm px-4 py-2 text-center"
         onClick={handleLogout}
       >
         Logout
