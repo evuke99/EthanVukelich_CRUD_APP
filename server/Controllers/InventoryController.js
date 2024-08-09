@@ -28,4 +28,17 @@ const getUserItems = async (req, res) => {
   res.status(200).json(items);
 };
 
-module.exports = { createItem, getItems, getUserItems };
+// Deletes a single user by its ID
+const deleteItem = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Invalid ID format" });
+  }
+  const item = await InventoryModel.findOneAndDelete({ _id: id });
+  if (!id) {
+    return res.status(400).json({ error: "No item found" });
+  }
+  res.status(200).json(item);
+};
+
+module.exports = { createItem, getItems, getUserItems, deleteItem };

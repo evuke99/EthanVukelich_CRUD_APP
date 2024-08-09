@@ -6,23 +6,30 @@ import Navbar from "../Components/Navbar";
 
 const Home = () => {
   const [update, setUpdate] = useState("");
+  const [signedIn, setSignedIn] = useState("");
+  const [newItem, setNewItem] = useState({});
 
   const Update = (data) => {
-    console.log("update home");
     setUpdate(data);
   };
 
-  useEffect(() => {
-    console.log("Home update changed");
-  }, [update]);
+  const SignIn = (data) => {
+    setSignedIn(data);
+  };
+
+  const NewItem = (data) => {
+    setNewItem(data);
+  };
+
+  useEffect(() => {}, [update]);
 
   return (
     <>
       <div>
-        <Navbar update={Update} />
+        <Navbar update={Update} signedIn={SignIn} newItem={NewItem} />
       </div>
       <div className="py-20 min-h-screen bg-base-300 ">
-        <InventoryList update={update} />
+        <InventoryList update={update} signedIn={signedIn} newItem={newItem} />
       </div>
     </>
   );

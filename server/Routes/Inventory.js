@@ -14,6 +14,9 @@ router.get("/getall", InventoryController.getItems);
 // GET request to get all items that match the current user's UserId
 router.get("/getItem/:UserId", InventoryController.getUserItems);
 
+// DELETE request by ID
+router.delete("/:id", InventoryController.deleteItem);
+
 // GET request by ID
 // router.get("/:id", UsersController.getUserByID);
 

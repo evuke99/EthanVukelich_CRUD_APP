@@ -1,6 +1,6 @@
 const { useState, useEffect } = require("react");
 
-const CreateItemForm = ({ creating }) => {
+const CreateItemForm = ({ creating, newItem }) => {
   const [ItemName, setItemName] = useState("");
   const [Description, setDescription] = useState("");
   const [Quantity, setQuantity] = useState(null);
@@ -32,6 +32,8 @@ const CreateItemForm = ({ creating }) => {
         setDescription("");
         setQuantity("");
         console.log("new item added", data);
+        console.log(data);
+        newItem(data);
         creating();
       })
       .catch((err) => {

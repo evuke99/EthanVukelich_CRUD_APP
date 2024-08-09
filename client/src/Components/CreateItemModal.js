@@ -1,7 +1,7 @@
 import * as React from "react";
 import CreateItemForm from "./CreateItemForm";
 
-const CreateItemModal = ({ creating }) => {
+const CreateItemModal = ({ creating, newItem }) => {
   return (
     <>
       <button
@@ -13,7 +13,7 @@ const CreateItemModal = ({ creating }) => {
       </button>
       <dialog id="CreateItemModal" className="modal">
         <div className="modal-box">
-          <CreateItemForm creating={creating} />
+          <CreateItemForm creating={creating} newItem={newItem} />
         </div>
       </dialog>
     </>

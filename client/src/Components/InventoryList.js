@@ -1,63 +1,120 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
 import ItemModal from "./ItemModal";
+import { useItemContext } from "../Hooks/useItemContext";
 
-const InventoryList = ({ update }) => {
-  const [items, setItems] = useState([]);
-  const [USER, setUSER] = useState("");
-  const [updateState, setUpdateState] = useState(false);
-  const [count, setCount] = useState(0);
+const InventoryList = ({ update, signedIn, newItem }) => {
+  const [items, setItems] = useState([]); //editable array
+  const [ITEMS, setITEMS] = useState([]); //set array
   const [editing, setEditing] = useState(false);
   const [moreInfo, setMoreInfo] = useState(false);
+  const [USER, setUSER] = useState({});
 
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => {
-  //     console.log("interval ran");
-  //     setUpdateState((i) => count + 1);
-  //   }, 500);
-  //   return () => clearInterval(intervalId);
-  // }, []);
+  const getUserItems = (data) => {
+    data = data || undefined;
+    console.log(ITEMS, items, USER);
+    if (USER != {} || USER !== undefined) {
+      if (data !== undefined) {
+        console.log("DATA DEFINED");
+        const temp = data.filter((i) => {
+          return i.UserId === USER._id;
+        });
+        console.log(temp, data);
+        setItems(temp);
+      } else {
+        console.log("DATA UNDEFINED");
+        console.log(ITEMS, USER._id);
+        const temp = ITEMS.filter((i) => {
+          return i.UserId === USER._id;
+        });
+        console.log(temp, ITEMS);
+        setItems(temp);
+      }
+    } else {
+      setItems(ITEMS);
+    }
+    console.log(ITEMS, items, USER);
+  };
 
-  //   return () => {
-  //     // Since useEffect dependency array is empty, this will be called only on unmount
-  //     clearInterval(intervalId);
-  //   };
-  // });
+  const getAllItems = () => {
+    console.log(ITEMS, items, USER);
+    setItems(ITEMS);
+    console.log(ITEMS, items, USER);
+  };
 
   useEffect(() => {
-    console.log("inventorylist use effect: ", update);
-    let data = JSON.parse(localStorage.getItem("User"));
-    let data1 = JSON.parse(localStorage.getItem("User"));
-    let data2 = JSON.parse(localStorage.getItem("User"));
-    let data3 = JSON.parse(localStorage.getItem("User"));
-    // setUSER(data);
-    console.log(data1);
-    console.log(data2);
-    console.log(data3);
-    console.log(data);
+    getUserItems();
+  }, [USER]);
 
-    console.log("inventorylist use effect 2: ", update);
-    const radioSelect = JSON.parse(localStorage.getItem("RADIO_SELECT"));
-    let URL = "/api/inventory/getall";
-    if (data != null && radioSelect === "USER_ITEMS") {
-      const UserId = data._id;
-      URL = `/api/inventory/getItem/${UserId}`;
-    } else if (data != null && radioSelect === "ALL_ITEMS") {
-      URL = "/api/inventory/getall";
+  useEffect(() => {
+    Axios.get("/api/users/getCurrentUser")
+      .then((res) => {
+        console.log("GET USER");
+        // if (!signedIn) {
+        //   setUSER({});
+        // } else {
+        //   setUSER(res.data.user);
+        // }
+        if (signedIn) setUSER(res.data.user);
+        return res.data;
+        // ITEM(JSON.parse(localStorage.getItem("User")));
+      })
+      .then((data) => {
+        console.log(data);
+        // getUserItems();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [signedIn]);
+
+  useEffect(() => {
+    console.log("SWITCH: ", update);
+    let data = JSON.parse(localStorage.getItem("UPDATE_OPTION"));
+    console.log(data);
+    switch (update) {
+      case "USER_ITEMS":
+        getUserItems();
+      case "ALL_ITEMS":
+        if (update === "ALL_ITEMS") {
+          //do not remove this condition, will break everything
+          getAllItems();
+        }
+      case "LOGIN":
+        break;
+      case "CREATE_ITEM":
+        const temp = [newItem];
+        console.log(temp);
+        const data = temp.concat(ITEMS);
+        console.log(data);
+        setITEMS(data);
+        getUserItems(data);
+        break;
+      case "LOGOUT":
+        setItems(ITEMS);
+        break;
+      default:
+        console.log("No update");
+        break;
     }
-    Axios.get(URL)
+  }, [update]);
+
+  useEffect(() => {
+    Axios.get("/api/inventory/getall")
       .then((res) => {
         return res.data;
       })
       .then((data) => {
+        console.log("GET ALL ITEMS");
         setItems(data);
+        setITEMS(data);
       })
       .catch((err) => {
         console.log("error: ", err);
       });
-  }, [update]);
+  }, []);
 
-  const toggleMoreInfo = () => {
+  const toggleMoreInfo = (index) => {
     if (moreInfo) {
       setMoreInfo(false);
     } else {
@@ -78,8 +135,28 @@ const InventoryList = ({ update }) => {
     toggleEdit();
   };
 
-  const Card = ({ item, description }) => {
-    if (editing) {
+  const handleDelete = (item) => {
+    console.log(items);
+    console.log(item._id);
+    Axios.delete(`/api/inventory/${item._id}`)
+      .then((res) => {
+        console.log(`Deleted ${item.ItemName}`);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    const data = ITEMS.filter((i) => {
+      return i._id !== item._id;
+    });
+    console.log(data);
+    // setItems(data);
+    setITEMS(data);
+    getUserItems(data);
+    console.log(items);
+  };
+
+  const Card = ({ index, item, description }) => {
+    if (editing && signedIn) {
       return (
         <section
           key={item._id}
@@ -108,6 +185,43 @@ const InventoryList = ({ update }) => {
           </div>
         </section>
       );
+    } else if (signedIn) {
+      return (
+        <section
+          key={item._id}
+          className="card bg-base-300 text-white border shadow-lg"
+        >
+          <div className="card-body   ">
+            <h2 className="card-title text-4xl gap-5">
+              <div className="">{item.ItemName}</div>
+              <div className="badge badge-secondary" contenteditable="true">
+                Qty: {item.Quantity} {index}
+              </div>
+            </h2>
+
+            <p className="break-words">{description}</p>
+            <div className="card-actions justify-end">
+              {/* {tooLong && ( */}
+              <button
+                className="btn btn-primary"
+                onClick={() => toggleMoreInfo(index)}
+              >
+                More Info
+              </button>
+              {/* )} */}
+              <button className="btn btn-primary" onClick={toggleEdit}>
+                Edit
+              </button>
+              <button
+                className="btn btn-primary"
+                onClick={(e) => handleDelete(item)}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </section>
+      );
     } else {
       return (
         <section
@@ -127,10 +241,6 @@ const InventoryList = ({ update }) => {
               <button className="btn btn-primary" onClick={toggleMoreInfo}>
                 More Info
               </button>
-              <button className="btn btn-primary" onClick={toggleEdit}>
-                Edit
-              </button>
-              <button className="btn btn-primary">Delete</button>
             </div>
           </div>
         </section>
@@ -141,16 +251,23 @@ const InventoryList = ({ update }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-y-5 gap-x-10 px-10 ">
       {console.log("InventoryList rendered")}
-      {items.map((item) => {
+      {items.map((item, index) => {
         let description = "";
-        console.log(moreInfo);
+        // let tooLong = false;
         if (item.Description.length <= 100 || moreInfo) {
           description = item.Description;
         } else {
           description = item.Description.substring(0, 100) + "...";
+          // tooLong = true;
         }
         return (
-          <Card item={item} description={description} />
+          <Card
+            index={index}
+            key={item.id}
+            item={item}
+            description={description}
+            // tooLong={tooLong}
+          />
           // <section key={item._id} className="card bg-primary text-white">
           //   <Card item={item} />
           //   <div className="card-body ">

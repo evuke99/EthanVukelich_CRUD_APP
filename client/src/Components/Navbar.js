@@ -5,10 +5,12 @@ import CreateItemModal from "./CreateItemModal";
 import CreateItemForm from "./CreateItemForm";
 import Axios from "axios";
 import { useState, useEffect } from "react";
+import { useItemContext } from "../Hooks/useItemContext";
 
 Axios.defaults.withCredentials = true;
 
-const Navbar = ({ update }) => {
+const Navbar = ({ update, signedIn, newItem }) => {
+  const { ITEMS, dispatch } = useItemContext();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   // const [Username, setUsername] = useState("");
   // const [_id, setID] = useState(null);
@@ -17,56 +19,34 @@ const Navbar = ({ update }) => {
   const [counter, setCounter] = useState(0);
 
   const logIn = () => {
-    console.log("logIn");
+    console.log("LOGIN");
+    signedIn(true);
     setIsLoggedIn(true);
     localStorage.setItem("LOGGED_IN", JSON.stringify(true));
-    localStorage.setItem("RADIO_SELECT", JSON.stringify("USER_ITEMS"));
-    update("LOGIN");
+    // localStorage.setItem("UPDATE_OPTION", JSON.stringify("LOGIN"));
+    // update("LOGIN");
+    handleUpdate("LOGIN");
   };
 
   const logOut = () => {
-    console.log("logOut");
+    console.log("LOGOUT");
+    signedIn(false);
     setIsLoggedIn(false);
     localStorage.setItem("LOGGED_IN", JSON.stringify(false));
     localStorage.removeItem("User");
-    localStorage.removeItem("RADIO_SELECT");
-    update("LOGOUT");
+    // update("LOGOUT");
+    handleUpdate("LOGOUT");
   };
 
   const createItem = () => {
-    console.log("create item");
-    localStorage.setItem("RADIO_SELECT", JSON.stringify("USER_ITEMS"));
-    update("CREATEITEM");
-  };
-
-  const handleRadios = (data) => {
-    // if (updateState) {
-    //   setUpdateState(false);
-    //   update(false);
-    // } else {
-    //   setUpdateState(true);
-    //   update(true);
-    // }
-
-    console.log(data);
-    // if (color === "RED") {
-    //   localStorage.setItem("RADIO_SELECT", JSON.stringify("USER_ITEMS"));
-    // } else if (color === "BLUE") {
-    //   localStorage.setItem("RADIO_SELECT", JSON.stringify("ALL_ITEMS"));
-    // }
+    console.log("CREATE_ITEM");
+    // update("CREATEITEM");
+    handleUpdate("CREATE_ITEM");
   };
 
   const handleUpdate = (data) => {
-    // if (updateState) {
-    //   console.log(updateState);
-    //   setUpdateState(false);
-    //   update(false);
-    // } else {
-    //   console.log(updateState);
-    //   setUpdateState(true);
-    //   update(true);
-    // }
-    localStorage.setItem("RADIO_SELECT", JSON.stringify(data));
+    console.log(data);
+    localStorage.setItem("UPDATE_OPTION", JSON.stringify(data));
     update(data);
   };
 
@@ -76,7 +56,6 @@ const Navbar = ({ update }) => {
       localStorage.setItem("LOGGED_IN", JSON.stringify(false));
     }
     setIsLoggedIn(JSON.parse(data));
-    console.log("useEffect");
     Axios.get("/api/users/getCurrentUser")
       .then((res) => {
         localStorage.setItem(
@@ -86,6 +65,7 @@ const Navbar = ({ update }) => {
             _id: res.data.user._id,
           })
         );
+        // ITEM(JSON.parse(localStorage.getItem("User")));
       })
       .catch((err) => {
         console.log(err);
@@ -99,7 +79,7 @@ const Navbar = ({ update }) => {
       return (
         <>
           <div className="navbar-center">
-            <CreateItemModal creating={createItem} />
+            <CreateItemModal creating={createItem} newItem={newItem} />
           </div>
           <div className="navbar-center hidden  lg:flex">
             <div className="form-control">
@@ -143,6 +123,7 @@ const Navbar = ({ update }) => {
       <div className="navbar-start">
         <a className="btn btn-ghost text-xl">Inventory Management</a>
       </div>
+      {console.log("NAVBAR rendered")}
 
       <IsLoggedIn />
     </div>
