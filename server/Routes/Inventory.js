@@ -17,6 +17,9 @@ router.get("/getItem/:UserId", InventoryController.getUserItems);
 // DELETE request by ID
 router.delete("/:id", InventoryController.deleteItem);
 
+// PATCH request by ID
+router.patch("/:id", InventoryController.updateItem);
+
 // GET request by ID
 // router.get("/:id", UsersController.getUserByID);
 

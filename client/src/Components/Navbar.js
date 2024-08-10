@@ -72,6 +72,23 @@ const Navbar = ({ update, signedIn, newItem }) => {
       });
   }, [isLoggedIn]);
 
+  const ItemButton = (props) => {
+    let text = "";
+    if (props.thing === "USER_ITEMS") {
+      text = "Your Items";
+    } else if (props.thing === "ALL_ITEMS") {
+      text = "All Items";
+    }
+    return (
+      <button
+        className="text-white hover:text-primary font-medium rounded-lg text-sm px-4 py-2 text-center active:text-secondary"
+        onClick={() => handleUpdate(props.thing)}
+      >
+        {text}
+      </button>
+    );
+  };
+
   // Changes Navbar based on if the user is logged in or not (need to add token validation here)
   const IsLoggedIn = () => {
     const data = localStorage.getItem("LOGGED_IN");
@@ -83,25 +100,14 @@ const Navbar = ({ update, signedIn, newItem }) => {
           </div>
           <div className="navbar-center hidden  lg:flex">
             <div className="form-control">
-              <button
-                className="text-white hover:text-blue-600 font-medium rounded-lg text-sm px-4 py-2 text-center"
-                onClick={() => handleUpdate("USER_ITEMS")}
-              >
-                Your Items
-              </button>
+              <ItemButton thing="USER_ITEMS" />
             </div>
             <div className="form-control">
-              <button
-                className="text-white hover:text-blue-600 font-medium rounded-lg text-sm px-4 py-2 text-center"
-                onClick={() => handleUpdate("ALL_ITEMS")}
-              >
-                All Items
-              </button>
+              <ItemButton thing="ALL_ITEMS" />
             </div>
           </div>
           <div className="navbar-end">
             <LogoutButton logginOut={logOut} />
-            <RegisterModal />
           </div>
         </>
       );

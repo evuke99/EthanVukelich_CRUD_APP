@@ -10,6 +10,7 @@ const Home = () => {
   const [newItem, setNewItem] = useState({});
 
   const Update = (data) => {
+    console.log(data);
     setUpdate(data);
   };
 

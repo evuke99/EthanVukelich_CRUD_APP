@@ -41,4 +41,23 @@ const deleteItem = async (req, res) => {
   res.status(200).json(item);
 };
 
-module.exports = { createItem, getItems, getUserItems, deleteItem };
+// Updates a single user by its ID
+const updateItem = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: "Invalid ID format" });
+  }
+  console.log(req.body);
+  const user = await InventoryModel.findOneAndUpdate(
+    { _id: id },
+    {
+      ...req.body,
+    }
+  );
+  if (!id) {
+    return res.status(400).json({ error: "No item found" });
+  }
+  res.status(200).json(user);
+};
+
+module.exports = { createItem, getItems, getUserItems, deleteItem, updateItem };

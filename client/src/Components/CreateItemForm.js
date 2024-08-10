@@ -53,7 +53,7 @@ const CreateItemForm = ({ creating, newItem }) => {
           </div>
           <div className=" md:space-y-8 sm:p-8">
             <h1 className="text-xl font-bold text-center leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Register Inventory Manager
+              Create New Item
             </h1>
             <form className="space-y-2 md:space-y-2" onSubmit={handleSubmit}>
               <div>
